@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D3E3B0F61C3283E8003EAA6E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3E3B0F51C3283E8003EAA6E /* Info.plist */; };
+		D3E3B10B1C3288E5003EAA6E /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */; };
+		D3E3B10D1C328A80003EAA6E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10C1C328A80003EAA6E /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D3E3B0CB1C3282BB003EAA6E /* SegmentedControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SegmentedControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E3B0F51C3283E8003EAA6E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
+		D3E3B10C1C328A80003EAA6E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +48,8 @@
 		D3E3B0CD1C3282BB003EAA6E /* SegmentedControl */ = {
 			isa = PBXGroup;
 			children = (
+				D3E3B10C1C328A80003EAA6E /* Constants.swift */,
+				D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */,
 				D3E3B0F41C3283B2003EAA6E /* Supporting Files */,
 			);
 			path = SegmentedControl;
@@ -125,7 +130,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3E3B0F61C3283E8003EAA6E /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +140,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3E3B10D1C328A80003EAA6E /* Constants.swift in Sources */,
+				D3E3B10B1C3288E5003EAA6E /* SegmentedControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,6 +240,7 @@
 		D3E3B0D41C3282BB003EAA6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -244,12 +251,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Teambition.SegmentedControl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		D3E3B0D51C3282BB003EAA6E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
