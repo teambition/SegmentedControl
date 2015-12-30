@@ -6,5 +6,8 @@
 //  Copyright © 2015年 Teambition. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
+struct SelectionIndicator {
+    static let defaultHeight: CGFloat = 5
+}

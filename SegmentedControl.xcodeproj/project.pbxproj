@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		D3E3B10B1C3288E5003EAA6E /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */; };
 		D3E3B10D1C328A80003EAA6E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10C1C328A80003EAA6E /* Constants.swift */; };
+		D3E3B10F1C3378DC003EAA6E /* SCScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10E1C3378DC003EAA6E /* SCScrollView.swift */; };
+		D3E3B1111C337ECB003EAA6E /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B1101C337ECB003EAA6E /* Style.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +18,8 @@
 		D3E3B0F51C3283E8003EAA6E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
 		D3E3B10C1C328A80003EAA6E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		D3E3B10E1C3378DC003EAA6E /* SCScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCScrollView.swift; sourceTree = "<group>"; };
+		D3E3B1101C337ECB003EAA6E /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,8 +52,10 @@
 		D3E3B0CD1C3282BB003EAA6E /* SegmentedControl */ = {
 			isa = PBXGroup;
 			children = (
+				D3E3B1101C337ECB003EAA6E /* Style.swift */,
 				D3E3B10C1C328A80003EAA6E /* Constants.swift */,
 				D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */,
+				D3E3B10E1C3378DC003EAA6E /* SCScrollView.swift */,
 				D3E3B0F41C3283B2003EAA6E /* Supporting Files */,
 			);
 			path = SegmentedControl;
@@ -142,6 +148,8 @@
 			files = (
 				D3E3B10D1C328A80003EAA6E /* Constants.swift in Sources */,
 				D3E3B10B1C3288E5003EAA6E /* SegmentedControl.swift in Sources */,
+				D3E3B10F1C3378DC003EAA6E /* SCScrollView.swift in Sources */,
+				D3E3B1111C337ECB003EAA6E /* Style.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
