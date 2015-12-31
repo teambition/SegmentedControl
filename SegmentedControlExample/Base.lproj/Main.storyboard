@@ -17,22 +17,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4SV-sF-ovz">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
-                            </scrollView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yse-7n-F1H" customClass="SegmentedControl" customModule="SegmentedControl">
+                                <rect key="frame" x="0.0" y="144" width="600" height="50"/>
+                                <color key="backgroundColor" white="0.70140086206896557" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="QsM-g1-Mwm"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MnM-wW-nKS" customClass="SegmentedControl" customModule="SegmentedControl">
+                                <rect key="frame" x="0.0" y="214" width="600" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="kEF-1k-YjZ"/>
+                                </constraints>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="4SV-sF-ovz" secondAttribute="bottom" id="9rx-CA-YYv"/>
-                            <constraint firstItem="4SV-sF-ovz" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="NDD-gI-Mrj"/>
-                            <constraint firstAttribute="trailing" secondItem="4SV-sF-ovz" secondAttribute="trailing" id="TXo-DX-3QB"/>
-                            <constraint firstItem="4SV-sF-ovz" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-64" id="z8Q-ay-ZOj"/>
+                            <constraint firstItem="MnM-wW-nKS" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="60o-ES-0hM"/>
+                            <constraint firstAttribute="trailing" secondItem="yse-7n-F1H" secondAttribute="trailing" id="6fS-Gh-gsb"/>
+                            <constraint firstItem="MnM-wW-nKS" firstAttribute="top" secondItem="yse-7n-F1H" secondAttribute="bottom" constant="20" id="KuQ-Vy-WIa"/>
+                            <constraint firstAttribute="trailing" secondItem="MnM-wW-nKS" secondAttribute="trailing" id="LbQ-Ze-c3w"/>
+                            <constraint firstItem="yse-7n-F1H" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="OOC-M2-pMh"/>
+                            <constraint firstItem="yse-7n-F1H" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="80" id="qOd-MO-pRQ"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="51n-mo-RNI"/>
                     <connections>
-                        <outlet property="scrollView" destination="4SV-sF-ovz" id="oHU-ta-5Lu"/>
+                        <outlet property="segmentedControl1" destination="yse-7n-F1H" id="zk9-YQ-Hty"/>
+                        <outlet property="segmentedControl2" destination="MnM-wW-nKS" id="yrr-FQ-uI0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -2,7 +2,7 @@
 //  SCScrollView.swift
 //  SegmentedControl
 //
-//  Created by 洪鑫 on 15/12/30.
+//  Created by Xin Hong on 15/12/30.
 //  Copyright © 2015年 Teambition. All rights reserved.
 //
 
@@ -31,5 +31,18 @@ class SCScrollView: UIScrollView {
         } else {
             super.touchesEnded(touches, withEvent: event)
         }
+    }
+}
+
+extension SCScrollView {
+    var parentViewController: UIViewController? {
+        var parentResponder: UIResponder? = self
+        while parentResponder != nil {
+            parentResponder = parentResponder!.nextResponder()
+            if let viewController = parentResponder as? UIViewController {
+                return viewController
+            }
+        }
+        return nil
     }
 }

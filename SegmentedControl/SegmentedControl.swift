@@ -2,7 +2,7 @@
 //  SegmentedControl.swift
 //  SegmentedControl
 //
-//  Created by 洪鑫 on 15/12/29.
+//  Created by Xin Hong on 15/12/29.
 //  Copyright © 2015年 Teambition. All rights reserved.
 //
 
@@ -23,22 +23,22 @@ public class SegmentedControl: UIControl {
     public var animationEnabled = true
     public var userDragEnabled = true
     public private(set) var style = SegmentedControlStyle.Text
-    
+
     public var selectionBoxStyle = SegmentedControlSelectionBoxStyle.None
     public var selectionBoxColor = UIColor.blueColor()
     public var selectionBoxCornerRadius: CGFloat = 0
     public var selectionBoxEdgeInsets = UIEdgeInsetsZero
-    
+
     public var selectionIndicatorStyle = SegmentedControlSelectionIndicatorStyle.None
     public var selectionIndicatorColor = UIColor.blackColor()
     public var selectionIndicatorHeight = SelectionIndicator.defaultHeight
     public var selectionIndicatorEdgeInsets = UIEdgeInsetsZero
-    
+
     public private(set) var titles = [NSAttributedString]()
     public private(set) var selectedTitles: [NSAttributedString]?
     public private(set) var images = [UIImage]()
     public private(set) var selectedImages: [UIImage]?
-    
+
     private lazy var scrollView: SCScrollView = {
         let scrollView = SCScrollView()
         scrollView.scrollsToTop = false
@@ -48,67 +48,86 @@ public class SegmentedControl: UIControl {
     }()
     private lazy var selectionBoxLayer = CALayer()
     private lazy var selectionIndicatorLayer = CALayer()
-    
+
     // MARK: - Public functions
     public class func initWithTitles(titles: [NSAttributedString], selectedTitles: [NSAttributedString]?) -> SegmentedControl {
         let segmentedControl = SegmentedControl(frame: CGRectZero)
-        segmentedControl.commonInit()
         segmentedControl.style = .Text
         segmentedControl.titles = titles
         segmentedControl.selectedTitles = selectedTitles
         return segmentedControl
     }
-    
+
     public class func initWithImages(images: [UIImage], selectedImages: [UIImage]?) -> SegmentedControl {
         let segmentedControl = SegmentedControl(frame: CGRectZero)
-        segmentedControl.commonInit()
         segmentedControl.style = .Image
         segmentedControl.images = images
         segmentedControl.selectedImages = selectedImages
         return segmentedControl
     }
-    
+
+    public func setTitles(titles: [NSAttributedString], selectedTitles: [NSAttributedString]?) {
+        style = .Text
+        self.titles = titles
+        self.selectedTitles = selectedTitles
+    }
+
+    public func setImages(images: [UIImage], selectedImages: [UIImage]?) {
+        style = .Image
+        self.images = images
+        self.selectedImages = selectedImages
+    }
+
     public func setSelected(selectedIndex selectedIndex: Int, animated: Bool) {
         if !(0..<segmentsCount() ~= selectedIndex) {
             return
         }
         self.selectedIndex = selectedIndex
-        scrollToSelectedIndex(animated: true)
+        scrollToSelectedIndex(animated: animated)
+        if !animated {
+            selectionBoxLayer.actions = ["position": NSNull(), "bounds": NSNull()]
+            selectionIndicatorLayer.actions = ["position": NSNull(), "bounds": NSNull()]
+            selectionBoxLayer.frame = frameForSelectionBox()
+            selectionIndicatorLayer.frame = frameForSelectionIndicator()
+        }
     }
-    
+
     // MARK: - Initialization
     public override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
-    
+
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
-    
+
     public override func awakeFromNib() {
         super.awakeFromNib()
         commonInit()
     }
-    
+
     private func commonInit() {
         addSubview(scrollView)
         contentMode = .Redraw
+        if let parentViewController = scrollView.parentViewController {
+            parentViewController.automaticallyAdjustsScrollViewInsets = false
+        }
     }
-    
+
     // MARK: - Overriding
     public override func layoutSubviews() {
         super.layoutSubviews()
         update()
     }
-    
+
     public override var frame: CGRect {
         didSet {
             update()
         }
     }
-    
+
     public override func willMoveToSuperview(newSuperview: UIView?) {
         super.willMoveToSuperview(newSuperview)
         if newSuperview == nil {
@@ -125,7 +144,7 @@ public extension SegmentedControl {
         scrollView.scrollEnabled = userDragEnabled
         scrollView.contentSize = CGSize(width: totalSegmentsWidth(), height: frame.height)
     }
-    
+
     private func scrollToSelectedIndex(animated animated: Bool) {
         let rectToScroll: CGRect = {
             var rectToScroll = self.rectForSelectedIndex()
@@ -145,6 +164,9 @@ public extension SegmentedControl {
             if !CGRectContainsPoint(bounds, touchLocation) {
                 return
             }
+            if singleSegmentWidth() == 0 {
+                return
+            }
             let touchIndex = Int((touchLocation.x + scrollView.contentOffset.x) / singleSegmentWidth())
             if 0..<segmentsCount() ~= touchIndex {
                 if let delegate = delegate {
@@ -162,18 +184,18 @@ public extension SegmentedControl {
     public override func drawRect(rect: CGRect) {
         backgroundColor?.setFill()
         UIRectFill(bounds)
-        
+
         scrollView.layer.sublayers?.removeAll()
         selectionBoxLayer.backgroundColor = selectionBoxColor.CGColor
         selectionIndicatorLayer.backgroundColor = selectionIndicatorColor.CGColor
-        
+
         switch style {
         case .Text:
             drawTitles()
         case .Image:
             drawImages()
         }
-        
+
         if selectionIndicatorStyle != .None {
             drawSelectionIndicator()
         }
@@ -181,7 +203,7 @@ public extension SegmentedControl {
             drawSelectionBox()
         }
     }
-    
+
     private func drawTitles() {
         for (index, title) in titles.enumerate() {
             let titleSize = sizeForAttributedString(title)
@@ -201,12 +223,12 @@ public extension SegmentedControl {
                 }
                 return round(yPosition + yPositionOffset)
             }()
-            
+
             let titleRect: CGRect = {
                 let titleRect = CGRect(origin: CGPoint(x: xPosition, y: yPosition), size: titleSize)
                 return CGRect(x: round(titleRect.origin.x), y: round(titleRect.origin.y), width: round(titleRect.width), height: round(titleRect.height))
             }()
-            
+
             let titleString: NSAttributedString = {
                 if index == selectedIndex {
                     if let selectedTitle = selectedTitleWithIndex(index) {
@@ -227,7 +249,7 @@ public extension SegmentedControl {
             scrollView.layer.addSublayer(titleLayer)
         }
     }
-    
+
     private func drawImages() {
         for (index, image) in images.enumerate() {
             let xPosition: CGFloat = {
@@ -246,8 +268,11 @@ public extension SegmentedControl {
                 }
                 return round(yPosition + yPositionOffset)
             }()
-            let imageRect = CGRect(origin: CGPoint(x: xPosition, y: yPosition), size: image.size)
-            
+            let imageRect: CGRect = {
+                let imageRect = CGRect(origin: CGPoint(x: xPosition, y: yPosition), size: image.size)
+                return CGRect(x: round(imageRect.origin.x), y: round(imageRect.origin.y), width: round(imageRect.width), height: round(imageRect.height))
+            }()
+
             let contents: CGImage? = {
                 if index == selectedIndex {
                     if let selectedImage = selectedImageWithIndex(index) {
@@ -265,38 +290,23 @@ public extension SegmentedControl {
             scrollView.layer.addSublayer(imageLayer)
         }
     }
-    
+
     private func drawSelectionBox() {
-        let xPosition: CGFloat = {
-            return singleSegmentWidth() * CGFloat(selectedIndex)
-        }()
-        let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
-        let boxRect = CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
-                             y: fullRect.origin.y + selectionBoxEdgeInsets.top,
-                         width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
-                        height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
-        selectionBoxLayer.frame = boxRect
+        selectionBoxLayer.frame = frameForSelectionBox()
         selectionBoxLayer.cornerRadius = selectionBoxCornerRadius
-        scrollView.layer.insertSublayer(selectionBoxLayer, atIndex: 0)
+        if selectionBoxLayer.superlayer == nil {
+            scrollView.layer.insertSublayer(selectionBoxLayer, atIndex: 0)
+        }
     }
-    
+
     private func drawSelectionIndicator() {
-        let xPosition: CGFloat = {
-            return singleSegmentWidth() * CGFloat(selectedIndex)
-        }()
-        let yPosition: CGFloat = {
-            return frame.height - selectionIndicatorHeight
-        }()
-        let fullRect = CGRect(x: xPosition, y: yPosition, width: singleSegmentWidth(), height: selectionIndicatorHeight)
-        let indicatorRect = CGRect(x: fullRect.origin.x + selectionIndicatorEdgeInsets.left,
-                                   y: fullRect.origin.y + selectionIndicatorEdgeInsets.top,
-                               width: fullRect.width - (selectionIndicatorEdgeInsets.left + selectionIndicatorEdgeInsets.right),
-                              height: fullRect.height - (selectionIndicatorEdgeInsets.top + selectionIndicatorEdgeInsets.bottom))
-        selectionIndicatorLayer.frame = indicatorRect
-        if let _ = selectionBoxLayer.superlayer {
-            scrollView.layer.insertSublayer(selectionIndicatorLayer, above: selectionBoxLayer)
-        } else {
-            scrollView.layer.insertSublayer(selectionIndicatorLayer, atIndex: 0)
+        selectionIndicatorLayer.frame = frameForSelectionIndicator()
+        if selectionBoxLayer.superlayer == nil {
+            if let _ = selectionIndicatorLayer.superlayer {
+                scrollView.layer.insertSublayer(selectionIndicatorLayer, above: selectionBoxLayer)
+            } else {
+                scrollView.layer.insertSublayer(selectionIndicatorLayer, atIndex: 0)
+            }
         }
     }
 }
@@ -306,7 +316,7 @@ public extension SegmentedControl {
         let size = attributedString.size()
         return CGRectIntegral(CGRect(origin: CGPointZero, size: size)).size
     }
-    
+
     private func selectedImageWithIndex(index: Int) -> UIImage? {
         if let selectedImages = selectedImages {
             if 0..<selectedImages.count ~= index {
@@ -315,7 +325,7 @@ public extension SegmentedControl {
         }
         return nil
     }
-    
+
     private func selectedTitleWithIndex(index: Int) -> NSAttributedString? {
         if let selectedTitles = selectedTitles {
             if 0..<selectedTitles.count ~= index {
@@ -324,7 +334,7 @@ public extension SegmentedControl {
         }
         return nil
     }
-    
+
     private func segmentsCount() -> Int {
         switch style {
         case .Text:
@@ -333,11 +343,53 @@ public extension SegmentedControl {
             return images.count
         }
     }
-    
+
+    private func frameForSelectionBox() -> CGRect {
+        if selectionBoxStyle == .None {
+            return CGRectZero
+        }
+
+        let xPosition: CGFloat = {
+            return singleSegmentWidth() * CGFloat(selectedIndex)
+        }()
+        let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
+        let boxRect = CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
+            y: fullRect.origin.y + selectionBoxEdgeInsets.top,
+            width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
+            height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
+        return boxRect
+    }
+
+    private func frameForSelectionIndicator() -> CGRect {
+        if selectionIndicatorStyle == .None {
+            return CGRectZero
+        }
+
+        let xPosition: CGFloat = {
+            return singleSegmentWidth() * CGFloat(selectedIndex)
+        }()
+        let yPosition: CGFloat = {
+            switch selectionIndicatorStyle {
+            case .Bottom:
+                return frame.height - selectionIndicatorHeight
+            case .Top:
+                return 0
+            default:
+                return 0
+            }
+        }()
+        let fullRect = CGRect(x: xPosition, y: yPosition, width: singleSegmentWidth(), height: selectionIndicatorHeight)
+        let indicatorRect = CGRect(x: fullRect.origin.x + selectionIndicatorEdgeInsets.left,
+            y: fullRect.origin.y + selectionIndicatorEdgeInsets.top,
+            width: fullRect.width - (selectionIndicatorEdgeInsets.left + selectionIndicatorEdgeInsets.right),
+            height: fullRect.height - (selectionIndicatorEdgeInsets.top + selectionIndicatorEdgeInsets.bottom))
+        return indicatorRect
+    }
+
     private func rectForSelectedIndex() -> CGRect {
         return CGRect(x: singleSegmentWidth() * CGFloat(selectedIndex), y: 0, width:singleSegmentWidth() , height: frame.height)
     }
-    
+
     private func singleSegmentWidth() -> CGFloat {
         func defaultSegmentWidth() -> CGFloat {
             if segmentsCount() == 0 {
@@ -345,13 +397,13 @@ public extension SegmentedControl {
             }
             return frame.width / CGFloat(segmentsCount())
         }
-        
+
         if let segmentWidth = segmentWidth {
             return segmentWidth
         }
         return defaultSegmentWidth()
     }
-    
+
     private func totalSegmentsWidth() -> CGFloat {
         return CGFloat(segmentsCount()) * singleSegmentWidth()
     }
