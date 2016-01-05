@@ -89,6 +89,9 @@ public class SegmentedControl: UIControl {
             selectionIndicatorLayer.actions = ["position": NSNull(), "bounds": NSNull()]
             selectionBoxLayer.frame = frameForSelectionBox()
             selectionIndicatorLayer.frame = frameForSelectionIndicator()
+        } else {
+            selectionBoxLayer.actions = nil
+            selectionIndicatorLayer.actions = nil
         }
     }
 
