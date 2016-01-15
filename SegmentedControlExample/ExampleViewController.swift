@@ -54,6 +54,8 @@ class ExampleViewController: UIViewController {
         segmentedControl.selectionBoxStyle = .Default
         segmentedControl.selectionBoxCornerRadius = 15
         segmentedControl.frame.size = CGSize(width: 70 * titles.count, height: 30)
+        segmentedControl.longPressEnabled = true
+        segmentedControl.longPressMinimumPressDuration = 1
         navigationItem.titleView = segmentedControl
     }
     
@@ -139,6 +141,28 @@ extension ExampleViewController: SegmentedControlDelegate {
             print("The title is “\(segmentedControl.titles[selectedIndex].string)”\n")
         case .Image:
             print("The image is “\(segmentedControl.images[selectedIndex])”\n")
+        }
+    }
+
+    func segmentedControl(segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int) {
+        print("Did long press index \(longPressIndex)")
+        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+            let viewController = UIViewController()
+            viewController.modalPresentationStyle = .Popover
+            viewController.preferredContentSize = CGSize(width: 200, height: 300)
+            if let popoverController = viewController.popoverPresentationController {
+                popoverController.sourceView = view
+                let yOffset: CGFloat = 10
+                popoverController.sourceRect = view.convertRect(CGRect(origin: CGPoint(x: 70 * CGFloat(longPressIndex), y: yOffset), size: CGSize(width: 70, height: 30)), fromView: navigationItem.titleView)
+                popoverController.permittedArrowDirections = .Any
+                presentViewController(viewController, animated: true, completion: nil)
+            }
+        } else {
+            let message = segmentedControl.style == .Text ? "Long press title “\(segmentedControl.titles[longPressIndex].string)”" : "Long press image “\(segmentedControl.images[longPressIndex])”"
+            let alert = UIAlertController(title: nil, message: message, preferredStyle: .ActionSheet)
+            let cancelAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(cancelAction)
+            presentViewController(alert, animated: true, completion: nil)
         }
     }
 }

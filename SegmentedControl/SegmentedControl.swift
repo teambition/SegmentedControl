@@ -10,6 +10,7 @@ import UIKit
 
 public protocol SegmentedControlDelegate {
     func segmentedControl(segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int)
+    func segmentedControl(segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int)
 }
 
 public class SegmentedControl: UIControl {
@@ -41,6 +42,31 @@ public class SegmentedControl: UIControl {
     public private(set) var images = [UIImage]()
     public private(set) var selectedImages: [UIImage]?
 
+    public var longPressEnabled = false {
+        didSet {
+            if longPressEnabled {
+                longPressGesture = UILongPressGestureRecognizer()
+                longPressGesture!.addTarget(self, action: "segmentedControlLongPressed:")
+                longPressGesture!.minimumPressDuration = longPressMinimumPressDuration
+                scrollView.addGestureRecognizer(longPressGesture!)
+                longPressGesture!.delegate = self
+            } else if let _ = longPressGesture {
+                scrollView.removeGestureRecognizer(longPressGesture!)
+                longPressGesture!.delegate = nil
+                longPressGesture = nil
+            }
+        }
+    }
+    public var longPressMinimumPressDuration: CFTimeInterval = 0.5 {
+        didSet {
+            assert(longPressMinimumPressDuration >= 0.5, "MinimumPressDuration of LongPressGestureRecognizer must be no less than 0.5")
+            if let longPressGesture = longPressGesture {
+                longPressGesture.minimumPressDuration = longPressMinimumPressDuration
+            }
+        }
+    }
+    public private(set) var longPressActivated = false
+
     private lazy var scrollView: SCScrollView = {
         let scrollView = SCScrollView()
         scrollView.scrollsToTop = false
@@ -50,6 +76,7 @@ public class SegmentedControl: UIControl {
     }()
     private lazy var selectionBoxLayer = CALayer()
     private lazy var selectionIndicatorLayer = CALayer()
+    private var longPressGesture: UILongPressGestureRecognizer?
 
     // MARK: - Public functions
     public class func initWithTitles(titles: [NSAttributedString], selectedTitles: [NSAttributedString]?) -> SegmentedControl {
@@ -165,6 +192,10 @@ public extension SegmentedControl {
 
 public extension SegmentedControl {
     public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if longPressActivated {
+            return
+        }
+
         if let touch = touches.first {
             let touchLocation = touch.locationInView(self)
             if !CGRectContainsPoint(bounds, touchLocation) {
@@ -180,6 +211,70 @@ public extension SegmentedControl {
                 }
                 if touchIndex != selectedIndex {
                     setSelected(selectedIndex: touchIndex, animated: animationEnabled)
+                }
+            }
+        }
+    }
+}
+
+extension SegmentedControl: UIGestureRecognizerDelegate {
+    public override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer == longPressGesture {
+            if let longPressIndex = locationIndexForGesture(gestureRecognizer) {
+                return longPressIndex == selectedIndex
+            }
+        }
+        return false
+    }
+
+    func segmentedControlLongPressed(gesture: UIGestureRecognizer) {
+        switch gesture.state {
+        case .Possible:
+            print("LongPressGesture Possible!")
+            break
+        case .Began:
+            print("LongPressGesture Began!")
+            longPressActivated = true
+            longPressDidBegin(gesture)
+            break
+        case .Changed:
+            print("LongPressGesture Changed!")
+            break
+        case .Ended:
+            print("LongPressGesture Ended!")
+            longPressActivated = false
+            break
+        case .Cancelled:
+            print("LongPressGesture Cancelled!")
+            longPressActivated = false
+            break
+        case .Failed:
+            print("LongPressGesture Failed!")
+            longPressActivated = false
+            break
+        }
+    }
+
+    private func locationIndexForGesture(gesture: UIGestureRecognizer) -> Int? {
+        let longPressLocation = gesture.locationInView(self)
+        if !CGRectContainsPoint(bounds, longPressLocation) {
+            return nil
+        }
+        if singleSegmentWidth() == 0 {
+            return nil
+        }
+        let longPressIndex = Int((longPressLocation.x + scrollView.contentOffset.x) / singleSegmentWidth())
+        return longPressIndex
+    }
+
+    private func longPressDidBegin(gesture: UIGestureRecognizer) {
+        if let longPressIndex = locationIndexForGesture(gesture) {
+            if longPressIndex != selectedIndex {
+                return
+            }
+            if 0..<segmentsCount() ~= longPressIndex {
+                if let delegate = delegate {
+                    delegate.segmentedControl(self, didLongPressIndex: longPressIndex)
                 }
             }
         }
@@ -428,6 +523,10 @@ public extension SegmentedControl {
 
 public extension SegmentedControlDelegate {
     func segmentedControl(segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
+
+    }
+
+    func segmentedControl(segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int) {
 
     }
 }
