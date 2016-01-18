@@ -36,11 +36,14 @@ public class SegmentedControl: UIControl {
     public var selectionIndicatorColor = UIColor.blackColor()
     public var selectionIndicatorHeight = SelectionIndicator.defaultHeight
     public var selectionIndicatorEdgeInsets = UIEdgeInsetsZero
+    public var titleAttachedIconPositionOffset: (x: CGFloat , y: CGFloat ) = (0, 0)
 
     public private(set) var titles = [NSAttributedString]()
     public private(set) var selectedTitles: [NSAttributedString]?
     public private(set) var images = [UIImage]()
     public private(set) var selectedImages: [UIImage]?
+    public private(set) var titleAttachedIcons: [UIImage]?
+    public private(set) var selectedTitleAttachedIcons: [UIImage]?
 
     public var longPressEnabled = false {
         didSet {
@@ -106,6 +109,11 @@ public class SegmentedControl: UIControl {
         style = .Image
         self.images = images
         self.selectedImages = selectedImages
+    }
+
+    public func setTitleAttachedIcons(titleAttachedIcons: [UIImage]?, selectedTitleAttachedIcons: [UIImage]?) {
+        self.titleAttachedIcons = titleAttachedIcons
+        self.selectedTitleAttachedIcons = selectedTitleAttachedIcons
     }
 
     public func setSelected(selectedIndex selectedIndex: Int, animated: Bool) {
@@ -325,9 +333,33 @@ public extension SegmentedControl {
                 }
                 return round(yPosition + yPositionOffset)
             }()
+            let attachedIcon = index == selectedIndex ? selectedTitleAttachedIconWithIndex(index) : titleAttachedIconWithIndex(index)
+            var attachedIconRect = CGRectZero
 
             let titleRect: CGRect = {
-                let titleRect = CGRect(origin: CGPoint(x: xPosition, y: yPosition), size: titleSize)
+                var titleRect = CGRect(origin: CGPoint(x: xPosition, y: yPosition), size: titleSize)
+
+                if let attachedIcon = attachedIcon {
+                    let addedWidth = attachedIcon.size.width + titleAttachedIconPositionOffset.x
+                    titleRect.origin.x -= addedWidth / 2
+
+                    let xPositionOfAttachedIcon = titleRect.origin.x + titleRect.width + titleAttachedIconPositionOffset.x
+                    let yPositionOfAttachedIcon: CGFloat = {
+                        let yPositionOfAttachedIcon = (frame.height - attachedIcon.size.height) / 2
+                        var yPositionOffset = titleAttachedIconPositionOffset.y
+                        switch selectionIndicatorStyle {
+                        case .Top:
+                            yPositionOffset += selectionIndicatorHeight / 2
+                        case .Bottom:
+                            yPositionOffset += -selectionIndicatorHeight / 2
+                        default:
+                            break
+                        }
+                        return round(yPositionOfAttachedIcon + yPositionOffset)
+                    }()
+                    attachedIconRect = CGRect(x: round(xPositionOfAttachedIcon), y: round(yPositionOfAttachedIcon), width: round(attachedIcon.size.width), height: round(attachedIcon.size.height))
+                }
+
                 return CGRect(x: round(titleRect.origin.x), y: round(titleRect.origin.y), width: round(titleRect.width), height: round(titleRect.height))
             }()
 
@@ -348,6 +380,14 @@ public extension SegmentedControl {
                 titleLayer.contentsScale = UIScreen.mainScreen().scale
                 return titleLayer
             }()
+
+            if let attachedIcon = attachedIcon {
+                let attachedIconLayer = CALayer()
+                attachedIconLayer.frame = attachedIconRect
+                attachedIconLayer.contents = attachedIcon.CGImage
+                scrollView.layer.addSublayer(attachedIconLayer)
+            }
+
             scrollView.layer.addSublayer(titleLayer)
         }
     }
@@ -432,6 +472,24 @@ public extension SegmentedControl {
         if let selectedTitles = selectedTitles {
             if 0..<selectedTitles.count ~= index {
                 return selectedTitles[index]
+            }
+        }
+        return nil
+    }
+
+    private func titleAttachedIconWithIndex(index: Int) -> UIImage? {
+        if let titleAttachedIcons = titleAttachedIcons {
+            if 0..<titleAttachedIcons.count ~= index {
+                return titleAttachedIcons[index]
+            }
+        }
+        return nil
+    }
+
+    private func selectedTitleAttachedIconWithIndex(index: Int) -> UIImage? {
+        if let selectedTitleAttachedIcons = selectedTitleAttachedIcons {
+            if 0..<selectedTitleAttachedIcons.count ~= index {
+                return selectedTitleAttachedIcons[index]
             }
         }
         return nil

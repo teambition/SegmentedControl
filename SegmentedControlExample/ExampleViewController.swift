@@ -57,6 +57,7 @@ class ExampleViewController: UIViewController {
         segmentedControl.longPressEnabled = true
         segmentedControl.unselectedSegmentsLongPressEnabled = true
         segmentedControl.longPressMinimumPressDuration = 1
+        segmentedControl.setTitleAttachedIcons([UIImage(named: "taskSegmentAdditionIcon")!], selectedTitleAttachedIcons: [UIImage(named: "taskSegmentAdditionIconSelected")!])
         navigationItem.titleView = segmentedControl
     }
     
