@@ -57,6 +57,7 @@ public class SegmentedControl: UIControl {
             }
         }
     }
+    public var unselectedSegmentsLongPressEnabled = false
     public var longPressMinimumPressDuration: CFTimeInterval = 0.5 {
         didSet {
             assert(longPressMinimumPressDuration >= 0.5, "MinimumPressDuration of LongPressGestureRecognizer must be no less than 0.5")
@@ -221,7 +222,7 @@ extension SegmentedControl: UIGestureRecognizerDelegate {
     public override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer == longPressGesture {
             if let longPressIndex = locationIndexForGesture(gestureRecognizer) {
-                return longPressIndex == selectedIndex
+                return unselectedSegmentsLongPressEnabled ? true : longPressIndex == selectedIndex
             }
         }
         return false
@@ -269,7 +270,7 @@ extension SegmentedControl: UIGestureRecognizerDelegate {
 
     private func longPressDidBegin(gesture: UIGestureRecognizer) {
         if let longPressIndex = locationIndexForGesture(gesture) {
-            if longPressIndex != selectedIndex {
+            if longPressIndex != selectedIndex && !unselectedSegmentsLongPressEnabled {
                 return
             }
             if 0..<segmentsCount() ~= longPressIndex {

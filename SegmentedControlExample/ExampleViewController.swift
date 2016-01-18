@@ -55,6 +55,7 @@ class ExampleViewController: UIViewController {
         segmentedControl.selectionBoxCornerRadius = 15
         segmentedControl.frame.size = CGSize(width: 70 * titles.count, height: 30)
         segmentedControl.longPressEnabled = true
+        segmentedControl.unselectedSegmentsLongPressEnabled = true
         segmentedControl.longPressMinimumPressDuration = 1
         navigationItem.titleView = segmentedControl
     }
