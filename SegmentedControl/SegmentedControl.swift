@@ -20,6 +20,8 @@ public class SegmentedControl: UIControl {
         }
     }
     public var segmentWidth: CGFloat?
+    public var minimumSegmentWidth: CGFloat?
+    public var maximumSegmentWidth: CGFloat?
     public var animationEnabled = true
     public var userDragEnabled = true
     public private(set) var style = SegmentedControlStyle.Text
@@ -146,6 +148,7 @@ public extension SegmentedControl {
         scrollView.frame = CGRect(origin: CGPointZero, size: frame.size)
         scrollView.scrollEnabled = userDragEnabled
         scrollView.contentSize = CGSize(width: totalSegmentsWidth(), height: frame.height)
+        scrollToSelectedIndex(animated: false)
     }
 
     private func scrollToSelectedIndex(animated animated: Bool) {
@@ -398,7 +401,18 @@ public extension SegmentedControl {
             if segmentsCount() == 0 {
                 return 0
             }
-            return frame.width / CGFloat(segmentsCount())
+            var segmentWidth = frame.width / CGFloat(segmentsCount())
+            if let minimumSegmentWidth = minimumSegmentWidth {
+                if segmentWidth < minimumSegmentWidth {
+                    segmentWidth = minimumSegmentWidth
+                }
+            }
+            if let maximumSegmentWidth = maximumSegmentWidth {
+                if segmentWidth > maximumSegmentWidth {
+                    segmentWidth = maximumSegmentWidth
+                }
+            }
+            return segmentWidth
         }
 
         if let segmentWidth = segmentWidth {

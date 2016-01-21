@@ -91,7 +91,7 @@ class ExampleViewController: UIViewController {
     }
     
     private func configureSegmentedControl1() {
-        let titleStrings = ["任务", "分享", "文件", "日程"]
+        let titleStrings = ["任务", "分享", "文件", "日程", "聊天"]
         let titles: [NSAttributedString] = {
             let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(17), NSForegroundColorAttributeName: UIColor.whiteColor()]
             var titles = [NSAttributedString]()
@@ -113,6 +113,7 @@ class ExampleViewController: UIViewController {
         segmentedControl1.setTitles(titles, selectedTitles: selectedTitles)
         segmentedControl1.delegate = self
         segmentedControl1.selectionBoxStyle = .Default
+        segmentedControl1.minimumSegmentWidth = 375.0 / 4.0
         segmentedControl1.selectionBoxColor = UIColor(white: 0.62, alpha: 1)
         segmentedControl1.selectionIndicatorStyle = .Top
         segmentedControl1.selectionIndicatorColor = UIColor(white: 0.3, alpha: 1)
