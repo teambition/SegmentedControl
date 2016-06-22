@@ -7,22 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D341EB501D1A838400677EAF /* SegmentedControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D341EB4F1D1A838400677EAF /* SegmentedControl.framework */; };
+		D341EB511D1A838400677EAF /* SegmentedControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D341EB4F1D1A838400677EAF /* SegmentedControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D3E3B0E31C328316003EAA6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B0E21C328316003EAA6E /* AppDelegate.swift */; };
 		D3E3B0E51C328316003EAA6E /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B0E41C328316003EAA6E /* ExampleViewController.swift */; };
 		D3E3B0E81C328316003EAA6E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D3E3B0E61C328316003EAA6E /* Main.storyboard */; };
 		D3E3B0EA1C328316003EAA6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D3E3B0E91C328316003EAA6E /* Assets.xcassets */; };
-		D3E3B1071C3286B0003EAA6E /* SegmentedControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3E3B1061C3286B0003EAA6E /* SegmentedControl.framework */; };
-		D3E3B1081C3286B0003EAA6E /* SegmentedControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D3E3B1061C3286B0003EAA6E /* SegmentedControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D3E3B1091C3286B0003EAA6E /* Embed Frameworks */ = {
+		D341EB521D1A838400677EAF /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				D3E3B1081C3286B0003EAA6E /* SegmentedControl.framework in Embed Frameworks */,
+				D341EB511D1A838400677EAF /* SegmentedControl.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -30,13 +30,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D341EB4F1D1A838400677EAF /* SegmentedControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SegmentedControl.framework; path = "/Users/hongxin/Library/Developer/Xcode/DerivedData/SegmentedControl-fegllupftdbokageotnuxdmypufc/Build/Products/Debug-iphonesimulator/SegmentedControl.framework"; sourceTree = "<absolute>"; };
 		D3E3B0DF1C328316003EAA6E /* SegmentedControlExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SegmentedControlExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E3B0E21C328316003EAA6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D3E3B0E41C328316003EAA6E /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		D3E3B0E71C328316003EAA6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D3E3B0E91C328316003EAA6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D3E3B0EE1C328316003EAA6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D3E3B1061C3286B0003EAA6E /* SegmentedControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SegmentedControl.framework; path = "/Users/hongxin/Library/Developer/Xcode/DerivedData/SegmentedControl-fegllupftdbokageotnuxdmypufc/Build/Products/Debug-iphoneos/SegmentedControl.framework"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3E3B1071C3286B0003EAA6E /* SegmentedControl.framework in Frameworks */,
+				D341EB501D1A838400677EAF /* SegmentedControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,7 +54,7 @@
 		D3E3B0D61C328316003EAA6E = {
 			isa = PBXGroup;
 			children = (
-				D3E3B1061C3286B0003EAA6E /* SegmentedControl.framework */,
+				D341EB4F1D1A838400677EAF /* SegmentedControl.framework */,
 				D3E3B0E11C328316003EAA6E /* SegmentedControlExample */,
 				D3E3B0E01C328316003EAA6E /* Products */,
 			);
@@ -90,7 +90,7 @@
 				D3E3B0DB1C328316003EAA6E /* Sources */,
 				D3E3B0DC1C328316003EAA6E /* Frameworks */,
 				D3E3B0DD1C328316003EAA6E /* Resources */,
-				D3E3B1091C3286B0003EAA6E /* Embed Frameworks */,
+				D341EB521D1A838400677EAF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

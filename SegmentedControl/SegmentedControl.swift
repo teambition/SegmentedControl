@@ -8,13 +8,13 @@
 
 import UIKit
 
-public protocol SegmentedControlDelegate {
+public protocol SegmentedControlDelegate: class {
     func segmentedControl(segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int)
     func segmentedControl(segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int)
 }
 
 public class SegmentedControl: UIControl {
-    public var delegate: SegmentedControlDelegate?
+    public weak var delegate: SegmentedControlDelegate?
     public private(set) var selectedIndex = 0 {
         didSet {
             setNeedsDisplay()
@@ -49,7 +49,7 @@ public class SegmentedControl: UIControl {
         didSet {
             if longPressEnabled {
                 longPressGesture = UILongPressGestureRecognizer()
-                longPressGesture!.addTarget(self, action: "segmentedControlLongPressed:")
+                longPressGesture!.addTarget(self, action: #selector(segmentedControlLongPressed(_:)))
                 longPressGesture!.minimumPressDuration = longPressMinimumPressDuration
                 scrollView.addGestureRecognizer(longPressGesture!)
                 longPressGesture!.delegate = self
