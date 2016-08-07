@@ -375,7 +375,11 @@ public extension SegmentedControl {
                 let titleLayer = CATextLayer()
                 titleLayer.frame = titleRect
                 titleLayer.alignmentMode = kCAAlignmentCenter
-                titleLayer.truncationMode = kCATruncationEnd
+                if #available(iOS 10.0, *) {
+                    titleLayer.truncationMode = kCATruncationNone
+                } else {
+                    titleLayer.truncationMode = kCATruncationEnd
+                }
                 titleLayer.string = titleString
                 titleLayer.contentsScale = UIScreen.mainScreen().scale
                 return titleLayer
