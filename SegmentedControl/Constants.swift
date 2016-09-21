@@ -8,6 +8,6 @@
 
 import UIKit
 
-struct SelectionIndicator {
+internal struct SelectionIndicator {
     static let defaultHeight: CGFloat = 5
 }

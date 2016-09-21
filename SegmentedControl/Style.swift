@@ -9,18 +9,17 @@
 import Foundation
 
 public enum SegmentedControlStyle {
-    case Text
-    case Image
+    case text
+    case image
 }
 
 public enum SegmentedControlSelectionIndicatorStyle {
-    case None
-    case Top
-    case Bottom
+    case none
+    case top
+    case bottom
 }
 
 public enum SegmentedControlSelectionBoxStyle {
-    case None
-    case Default
+    case none
+    case `default`
 }
-

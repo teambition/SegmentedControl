@@ -20,17 +20,17 @@ class ExampleViewController: UIViewController {
         setupUI()
     }
     
-    private func setupUI() {
+    fileprivate func setupUI() {
         configureNavigationTitleSegmentedControl()
         configureNavigationBelowSegmentedControl()
         configureSegmentedControl1()
         configureSegmentedControl2()
     }
     
-    private func configureNavigationTitleSegmentedControl() {
+    fileprivate func configureNavigationTitleSegmentedControl() {
         let titleStrings = ["任务", "分享", "文件", "日程"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(17), NSForegroundColorAttributeName: UIColor.darkGrayColor()]
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.darkGray]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -39,7 +39,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(17), NSForegroundColorAttributeName: UIColor.whiteColor()]
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -49,22 +49,22 @@ class ExampleViewController: UIViewController {
         }()
         let segmentedControl = SegmentedControl.initWithTitles(titles, selectedTitles: selectedTitles)
         segmentedControl.delegate = self
-        segmentedControl.backgroundColor = UIColor.clearColor()
+        segmentedControl.backgroundColor = UIColor.clear
         segmentedControl.selectionBoxColor = kLivelyBlueColor
-        segmentedControl.selectionBoxStyle = .Default
+        segmentedControl.selectionBoxStyle = .default
         segmentedControl.selectionBoxCornerRadius = 15
         segmentedControl.frame.size = CGSize(width: 70 * titles.count, height: 30)
-        segmentedControl.longPressEnabled = true
-        segmentedControl.unselectedSegmentsLongPressEnabled = true
+        segmentedControl.isLongPressEnabled = true
+        segmentedControl.isUnselectedSegmentsLongPressEnabled = true
         segmentedControl.longPressMinimumPressDuration = 1
-        segmentedControl.setTitleAttachedIcons([UIImage(named: "taskSegmentAdditionIcon")!], selectedTitleAttachedIcons: [UIImage(named: "taskSegmentAdditionIconSelected")!])
+        segmentedControl.setTitleAttachedIcons([#imageLiteral(resourceName: "taskSegmentAdditionIcon")], selectedTitleAttachedIcons: [#imageLiteral(resourceName: "taskSegmentAdditionIconSelected")])
         navigationItem.titleView = segmentedControl
     }
     
-    private func configureNavigationBelowSegmentedControl() {
+    fileprivate func configureNavigationBelowSegmentedControl() {
         let titleStrings = ["任务", "分享", "文件", "日程", "账目", "标签", "通知", "聊天", "收件箱", "联系人"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(16), NSForegroundColorAttributeName: UIColor.blackColor()]
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.black]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -73,7 +73,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(16), NSForegroundColorAttributeName: kLivelyBlueColor]
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: kLivelyBlueColor]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -83,21 +83,21 @@ class ExampleViewController: UIViewController {
         }()
         let segmentedControl = SegmentedControl.initWithTitles(titles, selectedTitles: selectedTitles)
         segmentedControl.delegate = self
-        segmentedControl.backgroundColor = UIColor.whiteColor()
-        segmentedControl.autoresizingMask = [.FlexibleRightMargin, .FlexibleWidth]
-        segmentedControl.selectionIndicatorStyle = .Bottom
+        segmentedControl.backgroundColor = UIColor.white
+        segmentedControl.autoresizingMask = [.flexibleRightMargin, .flexibleWidth]
+        segmentedControl.selectionIndicatorStyle = .bottom
         segmentedControl.selectionIndicatorColor = kLivelyBlueColor
         segmentedControl.selectionIndicatorHeight = 3
         segmentedControl.segmentWidth = 65
         segmentedControl.frame.origin.y = 64
-        segmentedControl.frame.size = CGSize(width: UIScreen.mainScreen().bounds.width, height: 40)
+        segmentedControl.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 40)
         view.insertSubview(segmentedControl, belowSubview: navigationController!.navigationBar)
     }
     
-    private func configureSegmentedControl1() {
+    fileprivate func configureSegmentedControl1() {
         let titleStrings = ["任务", "分享", "文件", "日程", "聊天"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(17), NSForegroundColorAttributeName: UIColor.whiteColor()]
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -106,7 +106,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFontOfSize(17), NSForegroundColorAttributeName: UIColor(white: 0.1, alpha: 1)]
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor(white: 0.1, alpha: 1)]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -116,55 +116,55 @@ class ExampleViewController: UIViewController {
         }()
         segmentedControl1.setTitles(titles, selectedTitles: selectedTitles)
         segmentedControl1.delegate = self
-        segmentedControl1.selectionBoxStyle = .Default
+        segmentedControl1.selectionBoxStyle = .default
         segmentedControl1.minimumSegmentWidth = 375.0 / 4.0
         segmentedControl1.selectionBoxColor = UIColor(white: 0.62, alpha: 1)
-        segmentedControl1.selectionIndicatorStyle = .Top
+        segmentedControl1.selectionIndicatorStyle = .top
         segmentedControl1.selectionIndicatorColor = UIColor(white: 0.3, alpha: 1)
     }
     
-    private func configureSegmentedControl2() {
-        let images = [UIImage(named: "project")!, UIImage(named: "me")!, UIImage(named: "notification")!, UIImage(named: "chat")!]
-        let selectedImages = [UIImage(named: "project-selected")!, UIImage(named: "me-selected")!, UIImage(named: "notification-selected")!, UIImage(named: "chat-selected")!]
+    fileprivate func configureSegmentedControl2() {
+        let images = [#imageLiteral(resourceName: "project"), #imageLiteral(resourceName: "me"), #imageLiteral(resourceName: "notification"), #imageLiteral(resourceName: "chat")]
+        let selectedImages = [#imageLiteral(resourceName: "project-selected"), #imageLiteral(resourceName: "me-selected"), #imageLiteral(resourceName: "notification-selected"), #imageLiteral(resourceName: "chat-selected")]
         segmentedControl2.setImages(images, selectedImages: selectedImages)
         segmentedControl2.delegate = self
-        segmentedControl2.selectionIndicatorStyle = .Bottom
+        segmentedControl2.selectionIndicatorStyle = .bottom
         segmentedControl2.selectionIndicatorColor = kLivelyBlueColor
         segmentedControl2.selectionIndicatorHeight = 3
-        segmentedControl2.selectionIndicatorEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20)
+        segmentedControl2.selectionIndicatorEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
     }
 }
 
 extension ExampleViewController: SegmentedControlDelegate {
-    func segmentedControl(segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
+    func segmentedControl(_ segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
         print("Did select index \(selectedIndex)")
         switch segmentedControl.style {
-        case .Text:
+        case .text:
             print("The title is “\(segmentedControl.titles[selectedIndex].string)”\n")
-        case .Image:
+        case .image:
             print("The image is “\(segmentedControl.images[selectedIndex])”\n")
         }
     }
 
-    func segmentedControl(segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int) {
+    func segmentedControl(_ segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int) {
         print("Did long press index \(longPressIndex)")
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             let viewController = UIViewController()
-            viewController.modalPresentationStyle = .Popover
+            viewController.modalPresentationStyle = .popover
             viewController.preferredContentSize = CGSize(width: 200, height: 300)
             if let popoverController = viewController.popoverPresentationController {
                 popoverController.sourceView = view
                 let yOffset: CGFloat = 10
-                popoverController.sourceRect = view.convertRect(CGRect(origin: CGPoint(x: 70 * CGFloat(longPressIndex), y: yOffset), size: CGSize(width: 70, height: 30)), fromView: navigationItem.titleView)
-                popoverController.permittedArrowDirections = .Any
-                presentViewController(viewController, animated: true, completion: nil)
+                popoverController.sourceRect = view.convert(CGRect(origin: CGPoint(x: 70 * CGFloat(longPressIndex), y: yOffset), size: CGSize(width: 70, height: 30)), from: navigationItem.titleView)
+                popoverController.permittedArrowDirections = .any
+                present(viewController, animated: true, completion: nil)
             }
         } else {
-            let message = segmentedControl.style == .Text ? "Long press title “\(segmentedControl.titles[longPressIndex].string)”" : "Long press image “\(segmentedControl.images[longPressIndex])”"
-            let alert = UIAlertController(title: nil, message: message, preferredStyle: .ActionSheet)
-            let cancelAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            let message = segmentedControl.style == .text ? "Long press title “\(segmentedControl.titles[longPressIndex].string)”" : "Long press image “\(segmentedControl.images[longPressIndex])”"
+            let alert = UIAlertController(title: nil, message: message, preferredStyle: .actionSheet)
+            let cancelAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alert.addAction(cancelAction)
-            presentViewController(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
     }
 }

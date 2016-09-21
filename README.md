@@ -5,7 +5,7 @@ SegmentedControl is a highly customizable segmented control for  iOS application
 
 ##How To Get Started
 ###Carthage
-Specify "SegmentedControl" in your Cartfile:
+Specify "SegmentedControl" in your ```Cartfile```:
 ```ogdl 
 github "teambition/SegmentedControl"
 ```
@@ -24,17 +24,17 @@ let segmentedControl = SegmentedControl.initWithTitles(titles, selectedTitles: s
 // assign delegate
 segmentedControl.delegate = self
 
-// configure selection box if needed, the default style is 'None'
-segmentedControl.selectionBoxStyle = .Default
+// configure selection box if needed, the default style is 'none'
+segmentedControl.selectionBoxStyle = .default
 segmentedControl.selectionBoxColor = UIColor(white: 0.62, alpha: 1)
 segmentedControl.selectionBoxCornerRadius = 15 // default is 0
-segmentedControl.selectionBoxEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20) // default is UIEdgeInsetsZero
+segmentedControl.selectionBoxEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20) // default is UIEdgeInsets.zero
 
-// configure selection indicator if needed, the default style is 'None'
-segmentedControl.selectionIndicatorStyle = .Top
+// configure selection indicator if needed, the default style is 'none'
+segmentedControl.selectionIndicatorStyle = .top
 segmentedControl.selectionIndicatorColor = UIColor(white: 0.3, alpha: 1)
 segmentedControl.selectionIndicatorHeight = 3 // default is 5
-segmentedControl.selectionIndicatorEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20) // default is UIEdgeInsetsZero
+segmentedControl.selectionIndicatorEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20) // default is UIEdgeInsets.zero
 ```
 
 #####  Image
@@ -50,22 +50,26 @@ let segmentedControl = SegmentedControl.initWithImages(images, selectedImages: s
 // assign delegate
 segmentedControl.delegate = self
 
-// configure selection box if needed, the default style is 'None'
-segmentedControl.selectionBoxStyle = .Default
-segmentedControl.selectionBoxColor = UIColor.lightGrayColor()
+// configure selection box if needed, the default style is 'none'
+segmentedControl.selectionBoxStyle = .default
+segmentedControl.selectionBoxColor = UIColor.lightGray
 segmentedControl.selectionBoxCornerRadius = 15 // default is 0
-segmentedControl.selectionBoxEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20) // default is UIEdgeInsetsZero
+segmentedControl.selectionBoxEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20) // default is UIEdgeInsets.zero
 
-// configure selection indicator if needed, the default style is 'None'
-segmentedControl.selectionIndicatorStyle = .Bottom
-segmentedControl.selectionIndicatorColor = UIColor.darkGrayColor()
+// configure selection indicator if needed, the default style is 'none'
+segmentedControl.selectionIndicatorStyle = .bottom
+segmentedControl.selectionIndicatorColor = UIColor.darkGray
 segmentedControl.selectionIndicatorHeight = 3 // default is 5
-segmentedControl.selectionIndicatorEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20) // default is UIEdgeInsetsZero
+segmentedControl.selectionIndicatorEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20) // default is UIEdgeInsets.zero
 ```
 
 #####  Implement delegate
 ```swift
-func segmentedControl(segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
+func segmentedControl(_ segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
+    // do something
+}
+
+func segmentedControl(_ segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int) {
     // do something
 }
 ```

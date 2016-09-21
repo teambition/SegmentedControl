@@ -8,37 +8,37 @@
 
 import UIKit
 
-class SCScrollView: UIScrollView {
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !dragging {
-            nextResponder()?.touchesBegan(touches, withEvent: event)
+internal class SCScrollView: UIScrollView {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !isDragging {
+            next?.touchesBegan(touches, with: event)
         } else {
-            super.touchesBegan(touches, withEvent: event)
+            super.touchesBegan(touches, with: event)
         }
     }
 
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !dragging {
-            nextResponder()?.touchesMoved(touches, withEvent: event)
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !isDragging {
+            next?.touchesMoved(touches, with: event)
         } else {
-            super.touchesMoved(touches, withEvent: event)
+            super.touchesMoved(touches, with: event)
         }
     }
 
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if !dragging {
-            nextResponder()?.touchesEnded(touches, withEvent: event)
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !isDragging {
+            next?.touchesEnded(touches, with: event)
         } else {
-            super.touchesEnded(touches, withEvent: event)
+            super.touchesEnded(touches, with: event)
         }
     }
 }
 
-extension SCScrollView {
-    var parentViewController: UIViewController? {
+internal extension SCScrollView {
+    internal var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
-            parentResponder = parentResponder!.nextResponder()
+            parentResponder = parentResponder!.next
             if let viewController = parentResponder as? UIViewController {
                 return viewController
             }
