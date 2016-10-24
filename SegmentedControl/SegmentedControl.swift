@@ -8,31 +8,26 @@
 
 import UIKit
 
-public protocol SegmentedControlDelegate: class {
-    func segmentedControl(_ segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int)
-    func segmentedControl(_ segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int)
-}
-
-public extension SegmentedControlDelegate {
-    func segmentedControl(_ segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
-
-    }
-
-    func segmentedControl(_ segmentedControl: SegmentedControl, didLongPressIndex longPressIndex: Int) {
-
-    }
-}
-
 open class SegmentedControl: UIControl {
     open weak var delegate: SegmentedControlDelegate?
+
+    open var layoutPolicy: SegmentedControlLayoutPolicy = .fixed
+    open var contentInset = UIEdgeInsets.zero
+
     open fileprivate(set) var selectedIndex = 0 {
         didSet {
             setNeedsDisplay()
         }
     }
-    open var segmentWidth: CGFloat?
-    open var minimumSegmentWidth: CGFloat?
-    open var maximumSegmentWidth: CGFloat?
+
+    open var segmentSpacing: CGFloat = 0 // Only available in dynamic layout policy
+    open var selectionBoxHeight: CGFloat = 0 // Only available in dynamic layout policy
+    open var selectionHorizontalPadding: CGFloat = Constant.defaultSelectionHorizontalPadding // Only available in dynamic layout policy
+
+    open var segmentWidth: CGFloat? // Only available in fixed layout policy
+    open var minimumSegmentWidth: CGFloat? // Only available in fixed layout policy
+    open var maximumSegmentWidth: CGFloat? // Only available in fixed layout policy
+
     open var isAnimationEnabled = true
     open var isUserDragEnabled = true
     open fileprivate(set) var style: SegmentedControlStyle = .text
@@ -40,20 +35,26 @@ open class SegmentedControl: UIControl {
     open var selectionBoxStyle: SegmentedControlSelectionBoxStyle = .none
     open var selectionBoxColor = UIColor.blue
     open var selectionBoxCornerRadius: CGFloat = 0
-    open var selectionBoxEdgeInsets = UIEdgeInsets.zero
+    open var selectionBoxEdgeInsets = UIEdgeInsets.zero // Only available in fixed layout policy
 
     open var selectionIndicatorStyle: SegmentedControlSelectionIndicatorStyle = .none
     open var selectionIndicatorColor = UIColor.black
     open var selectionIndicatorHeight = SelectionIndicator.defaultHeight
-    open var selectionIndicatorEdgeInsets = UIEdgeInsets.zero
-    open var titleAttachedIconPositionOffset: (x: CGFloat, y: CGFloat ) = (0, 0)
+    open var selectionIndicatorEdgeInsets = UIEdgeInsets.zero // Only available in fixed layout policy
+    open var titleAttachedIconPositionOffset: (x: CGFloat, y: CGFloat) = (0, 0)
 
-    open fileprivate(set) var titles = [NSAttributedString]()
+    open fileprivate(set) var titles = [NSAttributedString]() {
+        didSet {
+            titleSizes = titles.map { sizeForAttributedString($0) }
+        }
+    }
     open fileprivate(set) var selectedTitles: [NSAttributedString]?
     open fileprivate(set) var images = [UIImage]()
     open fileprivate(set) var selectedImages: [UIImage]?
     open fileprivate(set) var titleAttachedIcons: [UIImage]?
     open fileprivate(set) var selectedTitleAttachedIcons: [UIImage]?
+
+    fileprivate var titleSizes = [CGSize]()
 
     open var isLongPressEnabled = false {
         didSet {
@@ -211,26 +212,22 @@ open class SegmentedControl: UIControl {
     }
 
     open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isLongPressActivated {
+        guard !isLongPressActivated else {
+            return
+        }
+        guard let touch = touches.first else {
             return
         }
 
-        if let touch = touches.first {
-            let touchLocation = touch.location(in: self)
-            if !bounds.contains(touchLocation) {
-                return
-            }
-            if singleSegmentWidth() == 0 {
-                return
-            }
-            let touchIndex = Int((touchLocation.x + scrollView.contentOffset.x) / singleSegmentWidth())
-            if 0..<segmentsCount() ~= touchIndex {
-                if let delegate = delegate {
-                    delegate.segmentedControl(self, didSelectIndex: touchIndex)
-                }
-                if touchIndex != selectedIndex {
-                    setSelected(at: touchIndex, animated: isAnimationEnabled)
-                }
+        let touchLocation = touch.location(in: self)
+        guard let touchIndex = evaluateTouchIndex(fromTouchLocation: touchLocation) else {
+            return
+        }
+
+        if 0..<segmentsCount() ~= touchIndex {
+            delegate?.segmentedControl(self, didSelectIndex: touchIndex)
+            if touchIndex != selectedIndex {
+                setSelected(at: touchIndex, animated: isAnimationEnabled)
             }
         }
     }
@@ -239,22 +236,85 @@ open class SegmentedControl: UIControl {
 public extension SegmentedControl {
     // MARK: - Events
     fileprivate func update() {
-        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.contentInset = contentInset
         scrollView.frame = CGRect(origin: CGPoint.zero, size: frame.size)
         scrollView.isScrollEnabled = isUserDragEnabled
         scrollView.contentSize = CGSize(width: totalSegmentsWidth(), height: frame.height)
+        if layoutPolicy == .dynamic && (totalSegmentsWidth() + contentInset.left + contentInset.right) < frame.width {
+            let padding = (frame.width - totalSegmentsWidth() - contentInset.left - contentInset.right) / 2
+            scrollView.contentInset.left = contentInset.left + padding
+            scrollView.contentInset.right = contentInset.right + padding
+        }
         scrollToSelectedIndex(animated: false)
     }
 
     fileprivate func scrollToSelectedIndex(animated: Bool) {
         let rectToScroll: CGRect = {
             var rectToScroll = self.rectForSelectedIndex()
-            let scrollOffset = self.frame.width / 2 - self.singleSegmentWidth() / 2
+            let scrollOffset: CGFloat = {
+                switch layoutPolicy {
+                case .fixed:
+                    return frame.width / 2 - singleSegmentWidth() / 2
+                case .dynamic:
+                    return frame.width / 2 - singleSegmentWidth(at: selectedIndex) / 2
+                }
+            }()
             rectToScroll.origin.x -= scrollOffset
             rectToScroll.size.width += scrollOffset * 2
             return rectToScroll
         }()
-        scrollView.scrollRectToVisible(rectToScroll, animated: animated)
+        if !(layoutPolicy == .dynamic && (totalSegmentsWidth() + contentInset.left + contentInset.right) < frame.width) {
+            scrollView.scrollRectToVisible(rectToScroll, animated: animated)
+        }
+    }
+
+    fileprivate func evaluateTouchIndex(fromTouchLocation touchLocation: CGPoint) -> Int? {
+        func startX(_ index: Int) -> CGFloat {
+            return totalSegmentsWidths(before: index).reduce(0, +) + segmentSpacing * CGFloat(index)
+        }
+        func endX(_ index: Int) -> CGFloat {
+            return startX(index) + singleSegmentWidth(at: index)
+        }
+
+        guard bounds.contains(touchLocation) else {
+            return nil
+        }
+
+        switch layoutPolicy {
+        case .fixed:
+            if singleSegmentWidth() == 0 {
+                return nil
+            }
+            let touchIndex = Int((touchLocation.x + scrollView.contentOffset.x) / singleSegmentWidth())
+            return touchIndex
+        case .dynamic:
+            let touchX = touchLocation.x + scrollView.contentOffset.x
+            var maxIndex = segmentsCount() - 1
+            var minIndex = 0
+
+            if startX(minIndex)...endX(minIndex) ~= touchX {
+                return minIndex
+            } else if startX(maxIndex)...endX(maxIndex) ~= touchX {
+                return maxIndex
+            } else {
+                while (maxIndex - minIndex) / 2 > 0 {
+                    let midIndex = minIndex + (maxIndex - minIndex) / 2
+
+                    if startX(minIndex)...endX(minIndex) ~= touchX {
+                        return minIndex
+                    } else if startX(maxIndex)...endX(maxIndex) ~= touchX {
+                        return maxIndex
+                    } else if startX(midIndex)...endX(midIndex) ~= touchX {
+                        return midIndex
+                    } else if touchX < startX(midIndex) {
+                        maxIndex = midIndex
+                    } else {
+                        minIndex = midIndex
+                    }
+                }
+            }
+            return nil
+        }
     }
 }
 
@@ -299,14 +359,7 @@ extension SegmentedControl: UIGestureRecognizerDelegate {
 
     fileprivate func locationIndex(for gesture: UIGestureRecognizer) -> Int? {
         let longPressLocation = gesture.location(in: self)
-        if !bounds.contains(longPressLocation) {
-            return nil
-        }
-        if singleSegmentWidth() == 0 {
-            return nil
-        }
-        let longPressIndex = Int((longPressLocation.x + scrollView.contentOffset.x) / singleSegmentWidth())
-        return longPressIndex
+        return evaluateTouchIndex(fromTouchLocation: longPressLocation)
     }
 
     fileprivate func longPressDidBegin(_ gesture: UIGestureRecognizer) {
@@ -327,9 +380,15 @@ public extension SegmentedControl {
     // MARK: - Drawing
     fileprivate func drawTitles() {
         for (index, title) in titles.enumerated() {
-            let titleSize = sizeForAttributedString(title)
+            let titleSize = titleSizes[index]
             let xPosition: CGFloat = {
-                return singleSegmentWidth() * CGFloat(index) + (singleSegmentWidth() - titleSize.width) / 2
+                switch layoutPolicy {
+                case .fixed:
+                    return singleSegmentWidth() * CGFloat(index) + (singleSegmentWidth() - titleSize.width) / 2
+                case .dynamic:
+                    let frontWidths = totalSegmentsWidths(before: index)
+                    return frontWidths.reduce(0, +) + segmentSpacing * CGFloat(frontWidths.count) + selectionHorizontalPadding
+                }
             }()
             let yPosition: CGFloat = {
                 let yPosition = (frame.height - titleSize.height) / 2
@@ -352,7 +411,13 @@ public extension SegmentedControl {
 
                 if let attachedIcon = attachedIcon {
                     let addedWidth = attachedIcon.size.width + titleAttachedIconPositionOffset.x
-                    titleRect.origin.x -= addedWidth / 2
+
+                    switch layoutPolicy {
+                    case .fixed:
+                        titleRect.origin.x -= addedWidth / 2
+                    case .dynamic:
+                        break
+                    }
 
                     let xPositionOfAttachedIcon = titleRect.origin.x + titleRect.width + titleAttachedIconPositionOffset.x
                     let yPositionOfAttachedIcon: CGFloat = {
@@ -375,10 +440,8 @@ public extension SegmentedControl {
             }()
 
             let titleString: NSAttributedString = {
-                if index == selectedIndex {
-                    if let selectedTitle = selectedTitle(at: index) {
-                        return selectedTitle
-                    }
+                if index == selectedIndex, let selectedTitle = selectedTitle(at: index) {
+                    return selectedTitle
                 }
                 return title
             }()
@@ -526,13 +589,31 @@ public extension SegmentedControl {
         }
 
         let xPosition: CGFloat = {
-            return singleSegmentWidth() * CGFloat(selectedIndex)
+            switch layoutPolicy {
+            case .fixed:
+                return singleSegmentWidth() * CGFloat(selectedIndex)
+            case .dynamic:
+                let frontWidths = totalSegmentsWidths(before: selectedIndex)
+                return frontWidths.reduce(0, +) + segmentSpacing * CGFloat(frontWidths.count)
+            }
         }()
-        let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
-        let boxRect = CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
-            y: fullRect.origin.y + selectionBoxEdgeInsets.top,
-            width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
-            height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
+
+        let boxRect: CGRect = {
+            switch layoutPolicy  {
+            case .fixed:
+                let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
+                return CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
+                              y: fullRect.origin.y + selectionBoxEdgeInsets.top,
+                              width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
+                              height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
+            case .dynamic:
+                return CGRect(x: xPosition,
+                              y: (frame.height - selectionBoxHeight) / 2,
+                              width: singleSegmentWidth(at: selectedIndex),
+                              height: selectionBoxHeight)
+            }
+        }()
+
         return boxRect
     }
 
@@ -542,8 +623,15 @@ public extension SegmentedControl {
         }
 
         let xPosition: CGFloat = {
-            return singleSegmentWidth() * CGFloat(selectedIndex)
+            switch layoutPolicy {
+            case .fixed:
+                return singleSegmentWidth() * CGFloat(selectedIndex)
+            case .dynamic:
+                let frontWidths = totalSegmentsWidths(before: selectedIndex)
+                return frontWidths.reduce(0, +) + segmentSpacing * CGFloat(frontWidths.count)
+            }
         }()
+
         let yPosition: CGFloat = {
             switch selectionIndicatorStyle {
             case .bottom:
@@ -554,19 +642,37 @@ public extension SegmentedControl {
                 return 0
             }
         }()
-        let fullRect = CGRect(x: xPosition, y: yPosition, width: singleSegmentWidth(), height: selectionIndicatorHeight)
-        let indicatorRect = CGRect(x: fullRect.origin.x + selectionIndicatorEdgeInsets.left,
-            y: fullRect.origin.y + selectionIndicatorEdgeInsets.top,
-            width: fullRect.width - (selectionIndicatorEdgeInsets.left + selectionIndicatorEdgeInsets.right),
-            height: fullRect.height - (selectionIndicatorEdgeInsets.top + selectionIndicatorEdgeInsets.bottom))
+
+        let indicatorRect: CGRect = {
+            switch layoutPolicy {
+            case .fixed:
+                let fullRect = CGRect(x: xPosition, y: yPosition, width: singleSegmentWidth(), height: selectionIndicatorHeight)
+                return CGRect(x: fullRect.origin.x + selectionIndicatorEdgeInsets.left,
+                              y: fullRect.origin.y + selectionIndicatorEdgeInsets.top,
+                              width: fullRect.width - (selectionIndicatorEdgeInsets.left + selectionIndicatorEdgeInsets.right),
+                              height: fullRect.height - (selectionIndicatorEdgeInsets.top + selectionIndicatorEdgeInsets.bottom))
+            case .dynamic:
+                return CGRect(x: xPosition,
+                              y: yPosition,
+                              width: singleSegmentWidth(at: selectedIndex),
+                              height: selectionIndicatorHeight)
+            }
+        }()
         return indicatorRect
     }
 
     fileprivate func rectForSelectedIndex() -> CGRect {
-        return CGRect(x: singleSegmentWidth() * CGFloat(selectedIndex), y: 0, width: singleSegmentWidth(), height: frame.height)
+        switch layoutPolicy {
+        case .fixed:
+            return CGRect(x: singleSegmentWidth() * CGFloat(selectedIndex), y: 0, width: singleSegmentWidth(), height: frame.height)
+        case .dynamic:
+            let frontWidths = totalSegmentsWidths(before: selectedIndex)
+            let xPosition = frontWidths.reduce(0, +) + segmentSpacing * CGFloat(frontWidths.count)
+            return CGRect(x: xPosition, y: 0, width: singleSegmentWidth(at: selectedIndex), height: frame.height)
+        }
     }
 
-    fileprivate func singleSegmentWidth() -> CGFloat {
+    fileprivate func singleSegmentWidth(at index: Int? = nil) -> CGFloat {
         func defaultSegmentWidth() -> CGFloat {
             if segmentsCount() == 0 {
                 return 0
@@ -585,13 +691,40 @@ public extension SegmentedControl {
             return segmentWidth
         }
 
-        if let segmentWidth = segmentWidth {
+        switch layoutPolicy {
+        case .fixed:
+            if let segmentWidth = segmentWidth {
+                return segmentWidth
+            }
+            return defaultSegmentWidth()
+        case .dynamic:
+            guard let index = index, 0..<titleSizes.count ~= index else {
+                return 0
+            }
+            var segmentWidth = titleSizes[index].width + selectionHorizontalPadding * 2
+            if let attachedIcon = titleAttachedIcon(at: index) {
+                segmentWidth += attachedIcon.size.width + titleAttachedIconPositionOffset.x
+            }
             return segmentWidth
         }
-        return defaultSegmentWidth()
     }
 
     fileprivate func totalSegmentsWidth() -> CGFloat {
-        return CGFloat(segmentsCount()) * singleSegmentWidth()
+        switch layoutPolicy {
+        case .fixed:
+            return CGFloat(segmentsCount()) * singleSegmentWidth()
+        case .dynamic:
+            let segmentsWidths = titleSizes.enumerated().map { singleSegmentWidth(at: $0.offset) }
+            return segmentsWidths.reduce(0, +) + segmentSpacing * CGFloat(segmentsWidths.count - 1)
+        }
+    }
+
+    fileprivate func totalSegmentsWidths(before index: Int) -> [CGFloat] {
+        switch layoutPolicy {
+        case .fixed:
+            return Array(repeating: singleSegmentWidth(), count: index)
+        case .dynamic:
+            return titleSizes[0..<index].enumerated().map { singleSegmentWidth(at: $0.offset) }
+        }
     }
 }
