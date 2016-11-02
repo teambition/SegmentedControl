@@ -92,7 +92,6 @@ class ExampleViewController: UIViewController {
         segmentedControl.selectionIndicatorHeight = 3
         segmentedControl.segmentWidth = 65
         segmentedControl.frame.origin.y = 64
-        segmentedControl.contentInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         segmentedControl.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 40)
         view.insertSubview(segmentedControl, belowSubview: navigationController!.navigationBar)
     }
