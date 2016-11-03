@@ -14,7 +14,8 @@ private let kLivelyBlueColor = UIColor(red: 3 / 255, green: 169 / 255, blue: 244
 class ExampleViewController: UIViewController {
     @IBOutlet weak var segmentedControl1: SegmentedControl!
     @IBOutlet weak var segmentedControl2: SegmentedControl!
-    
+    @IBOutlet weak var segmentedControl3: SegmentedControl!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -25,6 +26,7 @@ class ExampleViewController: UIViewController {
         configureNavigationBelowSegmentedControl()
         configureSegmentedControl1()
         configureSegmentedControl2()
+        configureSegmentedControl3()
     }
     
     fileprivate func configureNavigationTitleSegmentedControl() {
@@ -132,6 +134,43 @@ class ExampleViewController: UIViewController {
         segmentedControl2.selectionIndicatorColor = kLivelyBlueColor
         segmentedControl2.selectionIndicatorHeight = 3
         segmentedControl2.selectionIndicatorEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+    }
+
+    fileprivate func configureSegmentedControl3() {
+        let titleStrings = ["Tasks", "Posts", "Files", "Meetings", "Favourites", "Chats"]
+        let titles: [NSAttributedString] = {
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.darkGray]
+            var titles = [NSAttributedString]()
+            for titleString in titleStrings {
+                let title = NSAttributedString(string: titleString, attributes: attributes)
+                titles.append(title)
+            }
+            return titles
+        }()
+        let selectedTitles: [NSAttributedString] = {
+            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
+            var selectedTitles = [NSAttributedString]()
+            for titleString in titleStrings {
+                let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
+                selectedTitles.append(selectedTitle)
+            }
+            return selectedTitles
+        }()
+        segmentedControl3.setTitles(titles, selectedTitles: selectedTitles)
+        segmentedControl3.delegate = self
+        segmentedControl3.layoutPolicy = .dynamic
+        segmentedControl3.segmentSpacing = 5
+        segmentedControl3.selectionBoxHeight = 30
+        segmentedControl3.selectionHorizontalPadding = 15
+        segmentedControl3.selectionBoxStyle = .default
+        segmentedControl3.selectionBoxCornerRadius = 15
+        segmentedControl3.selectionBoxColor = kLivelyBlueColor
+        segmentedControl3.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        segmentedControl3.setTitleAttachedIcons([#imageLiteral(resourceName: "taskSegmentAdditionIcon")], selectedTitleAttachedIcons: [#imageLiteral(resourceName: "taskSegmentAdditionIconSelected")])
+        segmentedControl3.titleAttachedIconPositionOffset = (5, 1)
+        segmentedControl3.isLongPressEnabled = true
+        segmentedControl3.isUnselectedSegmentsLongPressEnabled = true
+        segmentedControl3.longPressMinimumPressDuration = 0.8
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D324D58C1DC981D0005BBBF5 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D324D58B1DC981D0005BBBF5 /* Protocols.swift */; };
 		D3E3B10B1C3288E5003EAA6E /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */; };
 		D3E3B10D1C328A80003EAA6E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10C1C328A80003EAA6E /* Constants.swift */; };
 		D3E3B10F1C3378DC003EAA6E /* SCScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E3B10E1C3378DC003EAA6E /* SCScrollView.swift */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D324D58B1DC981D0005BBBF5 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		D3E3B0CB1C3282BB003EAA6E /* SegmentedControl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SegmentedControl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3E3B0F51C3283E8003EAA6E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
@@ -54,6 +56,7 @@
 			children = (
 				D3E3B1101C337ECB003EAA6E /* Style.swift */,
 				D3E3B10C1C328A80003EAA6E /* Constants.swift */,
+				D324D58B1DC981D0005BBBF5 /* Protocols.swift */,
 				D3E3B10A1C3288E5003EAA6E /* SegmentedControl.swift */,
 				D3E3B10E1C3378DC003EAA6E /* SCScrollView.swift */,
 				D3E3B0F41C3283B2003EAA6E /* Supporting Files */,
@@ -147,6 +150,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D324D58C1DC981D0005BBBF5 /* Protocols.swift in Sources */,
 				D3E3B10D1C328A80003EAA6E /* Constants.swift in Sources */,
 				D3E3B10B1C3288E5003EAA6E /* SegmentedControl.swift in Sources */,
 				D3E3B10F1C3378DC003EAA6E /* SCScrollView.swift in Sources */,

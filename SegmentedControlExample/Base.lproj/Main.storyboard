@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Gdm-aB-bQw">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Gdm-aB-bQw">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Example View Controller-->
@@ -14,38 +18,49 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yse-7n-F1H" customClass="SegmentedControl" customModule="SegmentedControl">
-                                <rect key="frame" x="0.0" y="144" width="600" height="50"/>
-                                <color key="backgroundColor" white="0.70140086206896557" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="0.0" y="144" width="375" height="50"/>
+                                <color key="backgroundColor" red="0.70140087604522705" green="0.70140087604522705" blue="0.70140087604522705" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="QsM-g1-Mwm"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MnM-wW-nKS" customClass="SegmentedControl" customModule="SegmentedControl">
-                                <rect key="frame" x="0.0" y="214" width="600" height="50"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="0.0" y="214" width="375" height="50"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="kEF-1k-YjZ"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oR4-oj-KF7" customClass="SegmentedControl" customModule="SegmentedControl">
+                                <rect key="frame" x="0.0" y="284" width="375" height="40"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="GOT-Ob-KWz"/>
+                                </constraints>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="MnM-wW-nKS" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="60o-ES-0hM"/>
+                            <constraint firstItem="oR4-oj-KF7" firstAttribute="top" secondItem="MnM-wW-nKS" secondAttribute="bottom" constant="20" id="6QJ-rD-8Oo"/>
                             <constraint firstAttribute="trailing" secondItem="yse-7n-F1H" secondAttribute="trailing" id="6fS-Gh-gsb"/>
+                            <constraint firstAttribute="trailing" secondItem="oR4-oj-KF7" secondAttribute="trailing" id="FgK-Rj-aJd"/>
                             <constraint firstItem="MnM-wW-nKS" firstAttribute="top" secondItem="yse-7n-F1H" secondAttribute="bottom" constant="20" id="KuQ-Vy-WIa"/>
                             <constraint firstAttribute="trailing" secondItem="MnM-wW-nKS" secondAttribute="trailing" id="LbQ-Ze-c3w"/>
                             <constraint firstItem="yse-7n-F1H" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="OOC-M2-pMh"/>
                             <constraint firstItem="yse-7n-F1H" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="80" id="qOd-MO-pRQ"/>
+                            <constraint firstItem="oR4-oj-KF7" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="tPf-IW-FQS"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="51n-mo-RNI"/>
                     <connections>
                         <outlet property="segmentedControl1" destination="yse-7n-F1H" id="zk9-YQ-Hty"/>
                         <outlet property="segmentedControl2" destination="MnM-wW-nKS" id="yrr-FQ-uI0"/>
+                        <outlet property="segmentedControl3" destination="oR4-oj-KF7" id="7dU-fe-fK8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
