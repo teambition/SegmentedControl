@@ -90,6 +90,15 @@ open class SegmentedControl: UIControl {
         }
     }
     open fileprivate(set) var isLongPressActivated = false
+    open var scrollContentInset: UIEdgeInsets {
+        return scrollView.contentInset
+    }
+    open var scrollContentSize: CGSize {
+        return scrollView.contentSize
+    }
+    open var scrollContentOffset: CGPoint {
+        return scrollView.contentOffset
+    }
 
     fileprivate lazy var scrollView: SCScrollView = {
         let scrollView = SCScrollView()
@@ -150,6 +159,25 @@ open class SegmentedControl: UIControl {
         } else {
             selectionBoxLayer.actions = nil
             selectionIndicatorLayer.actions = nil
+        }
+    }
+
+    open func rectForSegment(at index: Int) -> CGRect? {
+        guard 0..<segmentsCount() ~= index else {
+            return nil
+        }
+        switch layoutPolicy {
+        case .fixed:
+            return CGRect(x: singleSegmentWidth() * CGFloat(index),
+                          y: 0,
+                          width: singleSegmentWidth(),
+                          height: frame.height)
+        case .dynamic:
+            let frontWidths = totalSegmentsWidths(before: index)
+            return CGRect(x: contentInset.left + frontWidths.reduce(0, +) + segmentSpacing * CGFloat(frontWidths.count),
+                          y: 0,
+                          width: singleSegmentWidth(at: index),
+                          height: frame.height)
         }
     }
 
