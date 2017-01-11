@@ -11,3 +11,7 @@ import UIKit
 struct SelectionIndicator {
     static let defaultHeight: CGFloat = 5
 }
+
+internal struct Constant {
+    static let defaultSelectionHorizontalPadding: CGFloat = 15
+}

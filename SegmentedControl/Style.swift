@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum SegmentedControlLayoutPolicy {
+    case fixed
+    case dynamic
+}
+
 public enum SegmentedControlStyle {
     case Text
     case Image
