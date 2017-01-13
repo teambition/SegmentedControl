@@ -461,7 +461,14 @@ public extension SegmentedControl {
         for (index, title) in titles.enumerate() {
             let titleSize = sizeForAttributedString(title)
             let xPosition: CGFloat = {
-                return singleSegmentWidth() * CGFloat(index) + (singleSegmentWidth() - titleSize.width) / 2
+                switch layoutPolicy {
+                case .fixed:
+                    return singleSegmentWidth() * CGFloat(index) + (singleSegmentWidth() - titleSize.width) / 2
+                case .dynamic:
+                    let frontWidths = totalSegmentsWidths(before: index)
+                    return contentInset.left + frontWidths.reduce(0, combine: +) + segmentSpacing * CGFloat(frontWidths.count) + selectionHorizontalPadding
+                }
+//                return singleSegmentWidth() * CGFloat(index) + (singleSegmentWidth() - titleSize.width) / 2
             }()
             let yPosition: CGFloat = {
                 let yPosition = (frame.height - titleSize.height) / 2
@@ -485,6 +492,12 @@ public extension SegmentedControl {
                 if let attachedIcon = attachedIcon {
                     let addedWidth = attachedIcon.size.width + titleAttachedIconPositionOffset.x
                     titleRect.origin.x -= addedWidth / 2
+                    switch layoutPolicy {
+                    case .fixed:
+                        titleRect.origin.x -= addedWidth / 2
+                    case .dynamic:
+                        break
+                    }
 
                     let xPositionOfAttachedIcon = titleRect.origin.x + titleRect.width + titleAttachedIconPositionOffset.x
                     let yPositionOfAttachedIcon: CGFloat = {
@@ -657,13 +670,35 @@ public extension SegmentedControl {
         }
 
         let xPosition: CGFloat = {
-            return singleSegmentWidth() * CGFloat(selectedIndex)
+//            return singleSegmentWidth() * CGFloat(selectedIndex)
+            switch layoutPolicy {
+            case .fixed:
+                return singleSegmentWidth() * CGFloat(selectedIndex)
+            case .dynamic:
+                let frontWidths = totalSegmentsWidths(before: selectedIndex)
+                return contentInset.left + frontWidths.reduce(0, combine: +) + segmentSpacing * CGFloat(frontWidths.count)
+            }
         }()
-        let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
-        let boxRect = CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
-            y: fullRect.origin.y + selectionBoxEdgeInsets.top,
-            width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
-            height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
+        let boxRect: CGRect = {
+            switch layoutPolicy  {
+            case .fixed:
+                let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
+                return CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
+                              y: fullRect.origin.y + selectionBoxEdgeInsets.top,
+                              width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
+                              height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
+            case .dynamic:
+                return CGRect(x: xPosition,
+                              y: (frame.height - selectionBoxHeight) / 2,
+                              width: singleSegmentWidth(at: selectedIndex),
+                              height: selectionBoxHeight)
+            }
+        }()
+//        let fullRect = CGRect(x: xPosition, y: 0, width: singleSegmentWidth(), height: frame.height)
+//        let boxRect = CGRect(x: fullRect.origin.x + selectionBoxEdgeInsets.left,
+//            y: fullRect.origin.y + selectionBoxEdgeInsets.top,
+//            width: fullRect.width - (selectionBoxEdgeInsets.left + selectionBoxEdgeInsets.right),
+//            height: fullRect.height - (selectionBoxEdgeInsets.top + selectionBoxEdgeInsets.bottom))
         return boxRect
     }
 
