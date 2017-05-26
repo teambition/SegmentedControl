@@ -1,17 +1,17 @@
-#SegmentedControl
+# SegmentedControl
 SegmentedControl is a highly customizable segmented control for  iOS applications. 
 
 ![Example](Gif/SegmentedControlExample.gif "SegmentedControlExample")
 
-##How To Get Started
-###Carthage
+## How To Get Started
+### Carthage
 Specify "SegmentedControl" in your ```Cartfile```:
 ```ogdl 
 github "teambition/SegmentedControl"
 ```
 
-###Usage
-#####  Text
+### Usage
+####  Text
 ```swift
 let titles: [NSAttributedString] = ...
 let selectedTitles: [NSAttributedString] = ...
@@ -37,7 +37,7 @@ segmentedControl.selectionIndicatorHeight = 3 // default is 5
 segmentedControl.selectionIndicatorEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20) // default is UIEdgeInsets.zero
 ```
 
-#####  Image
+####  Image
 ```swift
 let images = ...
 let selectedImages = ...
@@ -63,7 +63,7 @@ segmentedControl.selectionIndicatorHeight = 3 // default is 5
 segmentedControl.selectionIndicatorEdgeInsets = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20) // default is UIEdgeInsets.zero
 ```
 
-#####  Implement delegate
+####  Implement delegate
 ```swift
 func segmentedControl(_ segmentedControl: SegmentedControl, didSelectIndex selectedIndex: Int) {
     // do something
