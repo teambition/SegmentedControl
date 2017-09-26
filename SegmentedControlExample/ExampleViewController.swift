@@ -32,7 +32,7 @@ class ExampleViewController: UIViewController {
     fileprivate func configureNavigationTitleSegmentedControl() {
         let titleStrings = ["任务", "分享", "文件", "日程"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.darkGray]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.darkGray]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -41,7 +41,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.white]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -66,7 +66,7 @@ class ExampleViewController: UIViewController {
     fileprivate func configureNavigationBelowSegmentedControl() {
         let titleStrings = ["任务", "分享", "文件", "日程", "账目", "标签", "通知", "聊天", "收件箱", "联系人"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: UIColor.black]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 16), .foregroundColor: UIColor.black]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -75,7 +75,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 16), NSForegroundColorAttributeName: kLivelyBlueColor]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 16), .foregroundColor: kLivelyBlueColor]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -91,7 +91,7 @@ class ExampleViewController: UIViewController {
         segmentedControl.selectionIndicatorColor = kLivelyBlueColor
         segmentedControl.selectionIndicatorHeight = 3
         segmentedControl.segmentWidth = 65
-        segmentedControl.frame.origin.y = 64
+        segmentedControl.frame.origin.y = UIApplication.shared.statusBarFrame.height + 44
         segmentedControl.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 40)
         view.insertSubview(segmentedControl, belowSubview: navigationController!.navigationBar)
     }
@@ -99,7 +99,7 @@ class ExampleViewController: UIViewController {
     fileprivate func configureSegmentedControl1() {
         let titleStrings = ["任务", "分享", "文件", "日程", "聊天"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.white]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -108,7 +108,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor(white: 0.1, alpha: 1)]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor(white: 0.1, alpha: 1)]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
@@ -139,7 +139,7 @@ class ExampleViewController: UIViewController {
     fileprivate func configureSegmentedControl3() {
         let titleStrings = ["Tasks", "Posts", "Files", "Meetings", "Favourites", "Chats"]
         let titles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.darkGray]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.darkGray]
             var titles = [NSAttributedString]()
             for titleString in titleStrings {
                 let title = NSAttributedString(string: titleString, attributes: attributes)
@@ -148,7 +148,7 @@ class ExampleViewController: UIViewController {
             return titles
         }()
         let selectedTitles: [NSAttributedString] = {
-            let attributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 17), NSForegroundColorAttributeName: UIColor.white]
+            let attributes: [NSAttributedStringKey: Any] = [.font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.white]
             var selectedTitles = [NSAttributedString]()
             for titleString in titleStrings {
                 let selectedTitle = NSAttributedString(string: titleString, attributes: attributes)
