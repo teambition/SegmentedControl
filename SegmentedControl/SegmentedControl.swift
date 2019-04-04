@@ -402,6 +402,10 @@ extension SegmentedControl: UIGestureRecognizerDelegate {
             print("LongPressGesture Failed!")
             isLongPressActivated = false
             break
+        @unknown default:
+            print("LongPressGesture Unknown Default!")
+            isLongPressActivated = false
+            break
         }
     }
 

@@ -35,7 +35,7 @@ internal class SCScrollView: UIScrollView {
 }
 
 internal extension SCScrollView {
-    internal var parentViewController: UIViewController? {
+    var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
             parentResponder = parentResponder!.next
