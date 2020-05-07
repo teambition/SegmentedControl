@@ -48,9 +48,12 @@ open class SegmentedControl: UIControl {
     open var selectionIndicatorStyle: SegmentedControlSelectionIndicatorStyle = .none
     open var selectionIndicatorColor = UIColor.black
     open var selectionIndicatorHeight = SelectionIndicator.defaultHeight
-    /// Only available in fixed layout policy
     open var selectionIndicatorEdgeInsets = UIEdgeInsets.zero
+    open var selectionIndicatorCornerRadius: CGFloat = 0
     open var titleAttachedIconPositionOffset: (x: CGFloat, y: CGFloat) = (0, 0)
+    
+    /// Use center alignment when not fill the width
+    open var horizontallyCenterIfPossible: Bool = true
 
     open fileprivate(set) var titles = [NSAttributedString]() {
         didSet {
@@ -282,7 +285,7 @@ public extension SegmentedControl {
             scrollView.contentInset = UIEdgeInsets.zero
         case .dynamic:
             scrollView.contentSize = CGSize(width: totalSegmentsWidth() + contentInset.left + contentInset.right, height: frame.height)
-            if (totalSegmentsWidth() + contentInset.left + contentInset.right) < frame.width {
+            if horizontallyCenterIfPossible && (totalSegmentsWidth() + contentInset.left + contentInset.right) < frame.width {
                 let padding = (frame.width - totalSegmentsWidth()) / 2
                 scrollView.contentInset = UIEdgeInsets(top: 0, left: padding - contentInset.left, bottom: 0, right: padding - contentInset.right)
             } else {
@@ -571,6 +574,7 @@ public extension SegmentedControl {
 
     fileprivate func drawSelectionIndicator() {
         selectionIndicatorLayer.frame = frameForSelectionIndicator()
+        selectionIndicatorLayer.cornerRadius = selectionIndicatorCornerRadius
         if selectionBoxLayer.superlayer == nil {
             if let _ = selectionIndicatorLayer.superlayer {
                 scrollView.layer.insertSublayer(selectionIndicatorLayer, above: selectionBoxLayer)
@@ -694,10 +698,12 @@ public extension SegmentedControl {
                               width: fullRect.width - (selectionIndicatorEdgeInsets.left + selectionIndicatorEdgeInsets.right),
                               height: fullRect.height - (selectionIndicatorEdgeInsets.top + selectionIndicatorEdgeInsets.bottom))
             case .dynamic:
-                return CGRect(x: xPosition,
-                              y: yPosition,
-                              width: singleSegmentWidth(at: selectedIndex),
-                              height: selectionIndicatorHeight)
+                return CGRect(
+                    x: xPosition,
+                    y: yPosition,
+                    width: singleSegmentWidth(at: selectedIndex),
+                    height: selectionIndicatorHeight
+                ).inset(by: selectionIndicatorEdgeInsets)
             }
         }()
         return indicatorRect
