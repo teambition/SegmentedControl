@@ -15,6 +15,9 @@ open class SegmentedControl: UIControl {
 
     open fileprivate(set) var selectedIndex = 0 {
         didSet {
+            if selectedIndex != oldValue {
+                updateTitleSizes()
+            }
             setNeedsDisplay()
         }
     }
@@ -57,7 +60,7 @@ open class SegmentedControl: UIControl {
 
     open fileprivate(set) var titles = [NSAttributedString]() {
         didSet {
-            titleSizes = titles.map { sizeForAttributedString($0) }
+            updateTitleSizes()
         }
     }
     open fileprivate(set) var selectedTitles: [NSAttributedString]?
@@ -67,6 +70,17 @@ open class SegmentedControl: UIControl {
     open fileprivate(set) var selectedTitleAttachedIcons: [UIImage]?
 
     fileprivate var titleSizes = [CGSize]()
+
+    private func updateTitleSizes() {
+        titleSizes = titles.enumerated().map({ (offset, title) in
+            if offset == selectedIndex,
+                let selected = selectedTitles,
+                0..<selected.count ~= offset {
+                return sizeForAttributedString(selected[offset])
+            }
+            return sizeForAttributedString(title)
+        })
+    }
 
     open var isLongPressEnabled = false {
         didSet {
