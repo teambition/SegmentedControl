@@ -159,11 +159,13 @@ class ExampleViewController: UIViewController {
         segmentedControl3.setTitles(titles, selectedTitles: selectedTitles)
         segmentedControl3.delegate = self
         segmentedControl3.layoutPolicy = .dynamic
-        segmentedControl3.segmentSpacing = 5
+        segmentedControl3.segmentSpacing = 20
         segmentedControl3.selectionBoxHeight = 30
         segmentedControl3.selectionHorizontalPadding = 15
         segmentedControl3.selectionBoxStyle = .default
         segmentedControl3.selectionBoxCornerRadius = 15
+        segmentedControl3.shouldShowAllBox = true
+
         segmentedControl3.selectionBoxColor = kLivelyBlueColor
         segmentedControl3.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         segmentedControl3.setTitleAttachedIcons([#imageLiteral(resourceName: "taskSegmentAdditionIcon")], selectedTitleAttachedIcons: [#imageLiteral(resourceName: "taskSegmentAdditionIconSelected")])

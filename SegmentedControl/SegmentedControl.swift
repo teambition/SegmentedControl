@@ -47,6 +47,11 @@ open class SegmentedControl: UIControl {
     open var selectionBoxCornerRadius: CGFloat = 0
     /// Only available in fixed layout policy
     open var selectionBoxEdgeInsets = UIEdgeInsets.zero
+    
+    /// Only available in selectionBoxStyle == .default
+    open var shouldShowAllBox: Bool = false
+    open var unselectedBoxColor = UIColor(red: 38.0/255.0, green: 38.0/255.0, blue: 38.0/255.0, alpha: 0.04)
+    private var allBoxLayers: [CALayer] = []
 
     open var selectionIndicatorStyle: SegmentedControlSelectionIndicatorStyle = .none
     open var selectionIndicatorColor = UIColor.black
@@ -54,6 +59,7 @@ open class SegmentedControl: UIControl {
     open var selectionIndicatorEdgeInsets = UIEdgeInsets.zero
     open var selectionIndicatorCornerRadius: CGFloat = 0
     open var titleAttachedIconPositionOffset: (x: CGFloat, y: CGFloat) = (0, 0)
+    
     
     /// Use center alignment when not fill the width
     open var horizontallyCenterIfPossible: Bool = true
@@ -63,6 +69,7 @@ open class SegmentedControl: UIControl {
             updateTitleSizes()
         }
     }
+    
     open fileprivate(set) var selectedTitles: [NSAttributedString]?
     open fileprivate(set) var images = [UIImage]()
     open fileprivate(set) var selectedImages: [UIImage]?
@@ -166,15 +173,28 @@ open class SegmentedControl: UIControl {
         if !(0..<segmentsCount() ~= selectedIndex) {
             return
         }
+        let oldSelectedIndex = selectedIndex
         selectedIndex = index
         scrollToSelectedIndex(animated: animated)
         if !animated {
-            selectionBoxLayer.actions = ["position": NSNull(), "bounds": NSNull()]
+            if shouldShowAllBox {
+                allBoxLayers[oldSelectedIndex].backgroundColor = unselectedBoxColor.cgColor
+                allBoxLayers[selectedIndex].backgroundColor = selectionBoxColor.cgColor
+            } else {
+                selectionBoxLayer.actions = ["position": NSNull(), "bounds": NSNull()]
+                selectionBoxLayer.frame = frameForSelectionBox(with: selectedIndex)
+            }
+
             selectionIndicatorLayer.actions = ["position": NSNull(), "bounds": NSNull()]
-            selectionBoxLayer.frame = frameForSelectionBox()
             selectionIndicatorLayer.frame = frameForSelectionIndicator()
         } else {
-            selectionBoxLayer.actions = nil
+            if shouldShowAllBox {
+                allBoxLayers[oldSelectedIndex].backgroundColor = unselectedBoxColor.cgColor
+                allBoxLayers[selectedIndex].backgroundColor = selectionBoxColor.cgColor
+            } else {
+                selectionBoxLayer.actions = nil
+            }
+            
             selectionIndicatorLayer.actions = nil
         }
     }
@@ -250,6 +270,18 @@ open class SegmentedControl: UIControl {
         selectionBoxLayer.backgroundColor = selectionBoxColor.cgColor
         selectionIndicatorLayer.backgroundColor = selectionIndicatorColor.cgColor
 
+        if shouldShowAllBox {
+            allBoxLayers.removeAll()
+            for index in 0..<segmentsCount() {
+                let titleBoxLayer = CALayer()
+                titleBoxLayer.frame = frameForSelectionBox(with: index)
+                titleBoxLayer.cornerRadius = selectionBoxCornerRadius
+                titleBoxLayer.backgroundColor = unselectedBoxColor.cgColor
+                scrollView.layer.addSublayer(titleBoxLayer)
+                allBoxLayers.append(titleBoxLayer)
+            }
+        }
+        
         switch style {
         case .text:
             drawTitles()
@@ -514,6 +546,7 @@ public extension SegmentedControl {
                 }
                 return title
             }()
+            
             let titleLayer: CATextLayer = {
                 let titleLayer = CATextLayer()
                 titleLayer.frame = titleRect
@@ -579,11 +612,17 @@ public extension SegmentedControl {
     }
 
     fileprivate func drawSelectionBox() {
-        selectionBoxLayer.frame = frameForSelectionBox()
-        selectionBoxLayer.cornerRadius = selectionBoxCornerRadius
-        if selectionBoxLayer.superlayer == nil {
-            scrollView.layer.insertSublayer(selectionBoxLayer, at: 0)
+        if shouldShowAllBox {
+            let selectedBoxLayer = allBoxLayers[selectedIndex]
+            selectedBoxLayer.backgroundColor = selectionBoxColor.cgColor
+        } else {
+            selectionBoxLayer.frame = frameForSelectionBox(with: selectedIndex)
+            selectionBoxLayer.cornerRadius = selectionBoxCornerRadius
+            if selectionBoxLayer.superlayer == nil {
+                scrollView.layer.insertSublayer(selectionBoxLayer, at: 0)
+            }
         }
+        
     }
 
     fileprivate func drawSelectionIndicator() {
@@ -643,7 +682,7 @@ public extension SegmentedControl {
         }
     }
 
-    fileprivate func frameForSelectionBox() -> CGRect {
+    fileprivate func frameForSelectionBox(with index: Int) -> CGRect {
         if selectionBoxStyle == .none {
             return CGRect.zero
         }
@@ -651,9 +690,9 @@ public extension SegmentedControl {
         let xPosition: CGFloat = {
             switch layoutPolicy {
             case .fixed:
-                return singleSegmentWidth() * CGFloat(selectedIndex)
+                return singleSegmentWidth() * CGFloat(index)
             case .dynamic:
-                let frontWidths = totalSegmentsWidths(before: selectedIndex)
+                let frontWidths = totalSegmentsWidths(before: index)
                 return contentInset.left + frontWidths.reduce(0, +) + segmentSpacing * CGFloat(frontWidths.count)
             }
         }()
@@ -669,7 +708,7 @@ public extension SegmentedControl {
             case .dynamic:
                 return CGRect(x: xPosition,
                               y: (frame.height - selectionBoxHeight) / 2,
-                              width: singleSegmentWidth(at: selectedIndex),
+                              width: singleSegmentWidth(at: index),
                               height: selectionBoxHeight)
             }
         }()
