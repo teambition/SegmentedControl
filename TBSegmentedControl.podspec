@@ -5,7 +5,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TBSegmentedControl'
-  s.version          = '0.3.0'
+  s.version          = '0.3.1'
   s.summary          = 'SegmentedControl is a highly customizable segmented control for iOS applications.'
   s.description      = <<-DESC
   SegmentedControl is a highly customizable segmented control for iOS applications.
